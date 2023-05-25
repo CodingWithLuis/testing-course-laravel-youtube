@@ -9,6 +9,8 @@ use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_can_see_the_empty_products_table(): void
     {
         // $response = $this->get('/products');
@@ -27,6 +29,11 @@ class ProductTest extends TestCase
     public function test_can_see_the_non_empty_products_table(): void
     {
         // $response = $this->get('/products');
+
+        Product::create([
+            'name' => 'Producto 1',
+            'price' => 10
+        ]);
 
         $response = $this->get(route('products.index'));
 
