@@ -9,9 +9,38 @@ class ProductController extends Controller
 {
     public function index()
     {
-
         $products = Product::all();
 
         return view('products.index', compact('products'));
+    }
+
+    public function create()
+    {
+        return view('products.create');
+    }
+
+    public function store(Request $request)
+    {
+        Product::create([
+            'name' => $request->input('name'),
+            'price' => $request->input('price')
+        ]);
+
+        return redirect()->route('products.index');
+    }
+
+    public function edit(Product $product)
+    {
+        return view('products.edit', compact('product'));
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $product->update([
+            'name' => $request->input('name'),
+            'price' => $request->input('price')
+        ]);
+
+        return redirect()->route('products.index');
     }
 }

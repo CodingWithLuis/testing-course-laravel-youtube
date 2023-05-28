@@ -45,4 +45,56 @@ class ProductTest extends TestCase
 
         $response->assertDontSee('No se encontraron productos');
     }
+
+    public function test_can_create_a_new_product(): void
+    {
+        $product = [
+            'name' => 'producto #1',
+            'price' => 25
+        ];
+
+        $response = $this->post('/products', $product);
+
+        $response->assertStatus(302);
+
+        $response->assertRedirect(route('products.index'));
+
+        $this->assertDatabaseCount('products', 1);
+
+        $lastProductCreated = Product::query()->latest()->first();
+
+        // $this->assertDatabaseHas('products', [
+        //     'name' => $lastProductCreated->name,
+        //     'price' => $lastProductCreated->price
+        // ]);
+
+        $this->assertDatabaseHas('products', $product);
+
+        $this->assertEquals($product['name'], $lastProductCreated->name);
+        $this->assertEquals($product['price'], $lastProductCreated->price);
+    }
+
+    public function test_can_edit_a_product(): void
+    {
+        $product = Product::create([
+            'name' => 'Product #1',
+            'price' => 100
+        ]);
+
+        $response = $this->put('/products/' . $product->id, [
+            'name' => 'producto editado',
+            'price' => 200
+        ]);
+
+        $response->assertStatus(302);
+
+        $response->assertRedirect(route('products.index'));
+
+        $this->assertDatabaseCount('products', 1);
+
+        $lastProductUpdated = Product::query()->latest()->first();
+
+        $this->assertEquals('producto editado', $lastProductUpdated->name);
+        $this->assertEquals(200, $lastProductUpdated->price);
+    }
 }
