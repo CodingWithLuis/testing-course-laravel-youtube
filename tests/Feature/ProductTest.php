@@ -97,4 +97,18 @@ class ProductTest extends TestCase
         $this->assertEquals('producto editado', $lastProductUpdated->name);
         $this->assertEquals(200, $lastProductUpdated->price);
     }
+
+    public function test_delete_product_successful()
+    {
+
+        $product = Product::factory()->create();
+
+        $response = $this->delete('/products/' . $product->id);
+
+        $response->assertStatus(302);
+
+        $this->assertDatabaseCount('products', 0);
+
+        $this->assertDatabaseMissing('products', $product->toArray());
+    }
 }

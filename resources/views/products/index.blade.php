@@ -28,6 +28,11 @@
                                 <td>{{ $product->price }}</td>
                                 <td>
                                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-success">Editar</a>
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="submit" class="btn btn-danger" value="ELIMINAR">
+                                    </form>
                                 </td>
                             </tr>
                             @empty
