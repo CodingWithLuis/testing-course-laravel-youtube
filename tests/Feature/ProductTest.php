@@ -6,24 +6,15 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\CreateUser;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
+    use CreateUser;
 
     private $user;
-
-    private function createNewUser($is_admin = 0): User
-    {
-        $user = User::factory()->create([
-            'email' => $is_admin ? 'admin@admin.com' : 'user@user.com',
-            'password' => bcrypt('password'),
-            'is_admin' => $is_admin
-        ]);
-
-        return $user;
-    }
 
     public function test_an_admin_can_see_the_empty_products_table(): void
     {
@@ -33,7 +24,8 @@ class ProductTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('products.index'));
 
-        $response->assertStatus(200);
+        // $response->assertStatus(200);
+        $response->assertOk();
 
         $response->assertViewIs('products.index');
 
